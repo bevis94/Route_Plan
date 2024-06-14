@@ -32,7 +32,7 @@ namespace test
         {
             InitializeComponent();
             InitializeDoubleBuffering(this);
-            InitializeDotMap(); //Map reset
+            InitializeVariable(); //Map reset
             Label_Line.Text = String.Format("Line = ");
             Label_Point.Text = String.Format("Point = ");
             Label_Mode.Text = "Mode : Adjustment";
@@ -49,7 +49,7 @@ namespace test
             }
         }
 
-        private void InitializeDotMap()
+        private void InitializeVariable()
         {
             for (int i = 0; i < dot_quantity; i++)
             {
@@ -58,6 +58,8 @@ namespace test
                     dot_map[i, j, 0] = 0;
                     dot_map[i, j, 1] = 0;
                 }
+                speed[i] = 6;
+                Point_num[i] = 0;
             }
         }
 
@@ -204,9 +206,8 @@ namespace test
         private void Create_Dot(MouseEventArgs e) {
             big = dot[0];
             speed[dot[0]] = 6;
-            Point_num[dot[0]] = 30;
             Label_Line.Text = $"Line = {dot[0] + 1}";
-            Label_Point.Text = $"Point = {dot[1]}";
+            Label_Point.Text = $"Point = " + ((dot[1] == 0) ? "S" : "E");
             if (dot[1] == 0) //點擊第一下創建起點
             {
                 dot_map[dot[0], 0, 0] = e.X;
@@ -229,8 +230,11 @@ namespace test
                 creat = false;
                 Label_Mode.Text = "Mode : Adjustment";
                 Bar_Speed.Value = 1800;
+                speed[big] = 6;
                 hScrollBar1.Value = (int)(n * Proportion / 10);
+                Point_num[big] = (int)(n * Proportion / 10);
             }
+            
             draw_background();
             Listbox_updata();
         }
@@ -247,7 +251,7 @@ namespace test
                         num[0] = i;
                         num[1] = j;
                         Label_Line.Text = String.Format("Line = " + (big + 1).ToString());
-                        Label_Point.Text = String.Format("Point = " + num[1].ToString());
+                        Label_Point.Text = String.Format("Point = " + ((num[1] == 0) ? "S" : (num[1] == 3) ? "E" : ("C" + num[1].ToString())));
                         draw_background();
                         big = i;
                         Bar_Speed.Value = (int)((speed[big] + 12) * 100);

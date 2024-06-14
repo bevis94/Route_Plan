@@ -107,7 +107,7 @@ namespace test
             // Label_Mode
             // 
             this.Label_Mode.Font = new System.Drawing.Font("新細明體", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.Label_Mode.Location = new System.Drawing.Point(285, 5);
+            this.Label_Mode.Location = new System.Drawing.Point(297, 5);
             this.Label_Mode.Name = "Label_Mode";
             this.Label_Mode.Size = new System.Drawing.Size(288, 41);
             this.Label_Mode.TabIndex = 7;
