@@ -29,6 +29,7 @@ namespace test
         Boolean creat = false; //創建模式
         Boolean picture = true; //更換圖片
 
+        //輸出用字串
         string outputSpeed = "";
         string outputDotNum = "";
         string outputDot_X = "";
