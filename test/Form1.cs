@@ -28,6 +28,12 @@ namespace test
         double Proportion; //輸出與輸入轉換用比例
         Boolean creat = false; //創建模式
         Boolean picture = true; //更換圖片
+
+        string outputSpeed = "";
+        string outputDotNum = "";
+        string outputDot_X = "";
+        string outputDot_Y = "";
+
         public Form1()
         {
             InitializeComponent();
@@ -493,19 +499,35 @@ namespace test
                         string filePath = saveFileDialog.FileName;
                         List<string> outputLines = new List<string>();
                         List<string> outputPoint = new List<string>();
+                        
                         double n = 400.0 / pictureBox1.Size.Height;
-
+                        outputLines.Add("using namespace std;");
+                        outputLines.Add($"int Line_num = {dot[0]};");
+                        outputSpeed = "double Speed[] = {";
+                        outputDotNum = "int DotNum[] = {";
+                        outputDot_X = "int Dot_X[] = {";
+                        outputDot_Y = "int Dot_Y[] = {";
                         for (int i = 0; i < dot[0]; i++)
                         {
                             outputPoint.Add(Point(i)); //儲存用檔案
-                            outputLines.AddRange(Line(i)); //機器讀取用檔案
+                            Line(i); //機器讀取用檔案
+                            outputSpeed += ((i != 0) ? " ," : "") + speed[i].ToString();
+                            outputDotNum += ((i != 0) ? " ," : "") + Point_num[i].ToString();
                         }
+                        outputSpeed += "};";
+                        outputDotNum += "};";
+                        outputDot_X += "};";
+                        outputDot_Y += "};";
+                        outputLines.Add(outputSpeed);
+                        outputLines.Add(outputDotNum);
+                        outputLines.Add(outputDot_X);
+                        outputLines.Add(outputDot_Y);
 
                         // 將點和曲線數據寫入文件
                         File.WriteAllLines(filePath, outputPoint);
 
                         // 生成另一個文件名（加上 "_Line" 後綴）以保存曲線數據
-                        string filePath_Line = Path.Combine(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath) + "_Line.txt");
+                        string filePath_Line = Path.Combine(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath) + "_Line.h");
                         File.WriteAllLines(filePath_Line, outputLines);
 
                         Label_Messenger.Text = "文件保存成功";
@@ -528,13 +550,16 @@ namespace test
                 speed[i], Point_num[i]);
         }
 
-        private List<string> Line(int i) //輸出機器讀取用檔案
+        private void Line(int i) //輸出機器讀取用檔案
         {
             List<string> Lines = new List<string>();
 
             Lines.Add(Point_num[i].ToString());
             Lines.Add(speed[i].ToString());
-            Lines.Add($"{Math.Round(dot_map[i, 0, 0] * Proportion)} {Math.Round((pictureBox1.Size.Height - dot_map[i, 0, 1]) * Proportion)}");
+            outputDot_X += (i != 0) ? " ," : "";
+            outputDot_X += $"{Math.Round(dot_map[i, 0, 0] * Proportion)}";
+            outputDot_Y += (i != 0) ? " ," : "";
+            outputDot_Y += $"{Math.Round((pictureBox1.Size.Height - dot_map[i, 0, 1]) * Proportion)}";
             double[] arcLengths = CalculateLength(i);
             double totalLength = arcLengths[100];
             double segmentLength = totalLength / (Point_num[i] - 1);
@@ -545,10 +570,9 @@ namespace test
                 double t = FindTForLength(targetLength, arcLengths);
                 int x = (int)Math.Round(CalculateBezierPoint(t, dot_map[i, 0, 0], dot_map[i, 1, 0], dot_map[i, 2, 0], dot_map[i, 3, 0]));
                 int y = (int)Math.Round(CalculateBezierPoint(t, dot_map[i, 0, 1], dot_map[i, 1, 1], dot_map[i, 2, 1], dot_map[i, 3, 1]));
-                Lines.Add($"{Math.Round(x * Proportion)} {Math.Round((pictureBox1.Size.Height - y) * Proportion)}");
+                outputDot_X += $", {Math.Round(x * Proportion)}";
+                outputDot_Y += $", {Math.Round((pictureBox1.Size.Height - y) * Proportion)}";
             }
-
-            return Lines;
         }
 
         private void Bar_Speed_ValueChanged(object sender, EventArgs e) //調整機器速度
