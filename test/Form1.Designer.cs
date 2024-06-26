@@ -46,8 +46,6 @@ namespace test
             this.Button_Open = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.Button_Change = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.Label_Messenger = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.Bar_Speed = new System.Windows.Forms.HScrollBar();
@@ -187,27 +185,6 @@ namespace test
             this.Button_Change.UseVisualStyleBackColor = true;
             this.Button_Change.Click += new System.EventHandler(this.Button_Change_Click);
             // 
-            // textBox1
-            // 
-            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBox1.Font = new System.Drawing.Font("新細明體", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.textBox1.Location = new System.Drawing.Point(1022, 6);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(258, 40);
-            this.textBox1.TabIndex = 13;
-            this.textBox1.Text = "test";
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("新細明體", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label1.Location = new System.Drawing.Point(862, 12);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(142, 28);
-            this.label1.TabIndex = 14;
-            this.label1.Text = "File name :";
-            // 
             // Label_Messenger
             // 
             this.Label_Messenger.AutoSize = true;
@@ -263,12 +240,12 @@ namespace test
             // hScrollBar1
             // 
             this.hScrollBar1.Location = new System.Drawing.Point(1004, 120);
-            this.hScrollBar1.Maximum = 59;
+            this.hScrollBar1.Maximum = 57;
             this.hScrollBar1.Name = "hScrollBar1";
             this.hScrollBar1.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.hScrollBar1.Size = new System.Drawing.Size(236, 28);
             this.hScrollBar1.TabIndex = 21;
-            this.hScrollBar1.Value = 30;
+            this.hScrollBar1.Value = 28;
             this.hScrollBar1.ValueChanged += new System.EventHandler(this.hScrollBar1_ValueChanged);
             // 
             // label4
@@ -294,8 +271,6 @@ namespace test
             this.Controls.Add(this.Bar_Speed);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.Label_Messenger);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.Button_Change);
             this.Controls.Add(this.Button_Open);
             this.Controls.Add(this.Button_Exit);
@@ -334,8 +309,6 @@ namespace test
         private Button Button_Exit;
         private Button Button_Open;
         private Button Button_Change;
-        private TextBox textBox1;
-        private Label label1;
         private Label Label_Messenger;
         private Label label6;
         private HScrollBar Bar_Speed;

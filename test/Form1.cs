@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Drawing;
-using System.Windows.Forms;
-using System.IO;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
 
 namespace test
 {
@@ -18,11 +18,11 @@ namespace test
         Pen line_big = new Pen(Color.Blue, 4); //Line big
         Pen center = new Pen(Color.Yellow, 3); //Center point
         const int dot_quantity = 50; //線段數量上限
-        int[] dot = {0, 0}; //當前創建的點
+        int[] dot = { 0, 0 }; //當前創建的點
         int[,,] dot_map = new int[dot_quantity, 4, 2]; //點的座標
         double[] speed = new double[dot_quantity]; //機器速度(伏特 V)
         int[] Point_num = new int[dot_quantity]; //中間點的數量
-        int[] num = { -1, -1}; //當前選擇的點 Move 用
+        int[] num = { -1, -1 }; //當前選擇的點 Move 用
         int big = -1; //當前選擇的線段
         int pictureBox_size;
         double Proportion; //輸出與輸入轉換用比例
@@ -111,9 +111,8 @@ namespace test
         {
             double[] arcLengths = CalculateLength(i);
             double totalLength = arcLengths[100];
-            double segmentLength = totalLength / Point_num[i];
-
-            for (int k = 1; k <= Point_num[i]; k++)
+            double segmentLength = totalLength / (Point_num[i] + 1);
+            for (int k = 0; k <= Point_num[i]; k++)
             {
                 double targetLength = k * segmentLength;
                 double t = FindTForLength(targetLength, arcLengths);
@@ -174,12 +173,28 @@ namespace test
             return arcLengths;
         }
         //----------------------------------------------------------------------------------------
+        private int getArrayMaxMin(int n, int max, int min)
+        {
+            if (n > max)
+            {
+                return max;
+            }
+            else if (n < min)
+            {
+                return min;
+            }
+            else
+            {
+                return n;
+            }
+        }
+
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e) //移動點
         {
             if (num[0] != -1 && e.Button == MouseButtons.Left)
             {
-                dot_map[num[0], num[1], 0] = e.X;
-                dot_map[num[0], num[1], 1] = e.Y;
+                dot_map[num[0], num[1], 0] = getArrayMaxMin(e.X, pictureBox1.Size.Width, 1);
+                dot_map[num[0], num[1], 1] = getArrayMaxMin(e.Y, pictureBox1.Size.Height, 1);
                 draw_background();
             }
             else if (num[0] != -1)
@@ -210,7 +225,8 @@ namespace test
             Listbox_updata();
         }
 
-        private void Create_Dot(MouseEventArgs e) {
+        private void Create_Dot(MouseEventArgs e)
+        {
             big = dot[0];
             speed[dot[0]] = 6;
             Label_Line.Text = $"Line = {dot[0] + 1}";
@@ -237,11 +253,9 @@ namespace test
                 creat = false;
                 Label_Mode.Text = "Mode : Adjustment";
                 Bar_Speed.Value = 1800;
-                speed[big] = 6;
                 hScrollBar1.Value = (int)(n * Proportion / 10);
-                Point_num[big] = (int)(n * Proportion / 10);
             }
-            
+
             draw_background();
             Listbox_updata();
         }
@@ -262,9 +276,7 @@ namespace test
                         draw_background();
                         big = i;
                         Bar_Speed.Value = (int)((speed[big] + 12) * 100);
-                        label2.Text = speed[big].ToString();
                         hScrollBar1.Value = Point_num[big];
-                        label3.Text = Point_num[big].ToString();
                         break;
                     }
                     else if (dot_map[i, j, 0] == 0)
@@ -290,7 +302,7 @@ namespace test
                 listBox1.Items.Add(string.Format("Point_Center2 = [{0,3:d}, {1,3:d}]", (int)(dot_map[big, 2, 0] * n), (int)((pictureBox1.Size.Height - dot_map[big, 2, 1]) * n)));
                 listBox1.Items.Add(string.Format("Point_End    =    [{0,3:d}, {1,3:d}]", (int)(dot_map[big, 3, 0] * n), (int)((pictureBox1.Size.Height - dot_map[big, 3, 1]) * n)));
                 listBox1.Items.Add(string.Format("Speed = {0:F1}", speed[big]));
-                listBox1.Items.Add(string.Format("Point = {0,2:d}", Point_num[big]));
+                listBox1.Items.Add(string.Format("Point = {0,2:d}", Point_num[big] + 2));
                 listBox1.Items.Add("------------------------------------------------------");
             }
 
@@ -304,7 +316,7 @@ namespace test
                     listBox1.Items.Add(string.Format("Point_Center2 = [{0,3:d}, {1,3:d}]", (int)(dot_map[i, 2, 0] * n), (int)((pictureBox1.Size.Height - dot_map[i, 2, 1]) * n)));
                     listBox1.Items.Add(string.Format("Point_End    =    [{0,3:d}, {1,3:d}]", (int)(dot_map[i, 3, 0] * n), (int)((pictureBox1.Size.Height - dot_map[i, 3, 1]) * n)));
                     listBox1.Items.Add(string.Format("Speed = {0:F1}", speed[i]));
-                    listBox1.Items.Add(string.Format("Point = {0,2:d}", Point_num[i]));
+                    listBox1.Items.Add(string.Format("Point = {0,2:d}", Point_num[i] + 2));
                     listBox1.Items.Add("------------------------------------------------------");
                 }
             }
@@ -328,9 +340,7 @@ namespace test
                         {
                             big = i - 1;
                             Bar_Speed.Value = (int)((speed[big] + 12) * 100);
-                            label2.Text = speed[big].ToString();
                             hScrollBar1.Value = Point_num[big];
-                            label3.Text = Point_num[big].ToString();
                             draw_background();
                             break;
                         }
@@ -350,7 +360,7 @@ namespace test
                 {
                     big = -1;
                 }
-            } 
+            }
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -473,14 +483,7 @@ namespace test
 
         private void Button_Save_Click(object sender, EventArgs e)
         {
-            if(textBox1.Text != "")
-            {
-                Save_File();
-            }
-            else
-            {
-                Label_Messenger.Text = "未輸入檔案名稱";
-            }
+            Save_File();
         }
 
         private void Save_File()
@@ -491,7 +494,7 @@ namespace test
                 {
                     saveFileDialog.Filter = "文本文件 (*.txt)|*.txt|所有文件 (*.*)|*.*";
                     saveFileDialog.Title = "請選擇要儲存的位置";
-                    saveFileDialog.FileName = textBox1.Text.Trim();
+                    saveFileDialog.FileName = "Route_Plan";
                     saveFileDialog.OverwritePrompt = false;
 
                     DialogResult result = saveFileDialog.ShowDialog();
@@ -500,7 +503,7 @@ namespace test
                         string filePath = saveFileDialog.FileName;
                         List<string> outputLines = new List<string>();
                         List<string> outputPoint = new List<string>();
-                        
+
                         double n = 400.0 / pictureBox1.Size.Height;
                         outputLines.Add("using namespace std;");
                         outputLines.Add($"int Line_num = {dot[0]};");
@@ -513,7 +516,7 @@ namespace test
                             outputPoint.Add(Point(i)); //儲存用檔案
                             Line(i); //機器讀取用檔案
                             outputSpeed += ((i != 0) ? " ," : "") + speed[i].ToString();
-                            outputDotNum += ((i != 0) ? " ," : "") + Point_num[i].ToString();
+                            outputDotNum += ((i != 0) ? " ," : "") + (Point_num[i] + 2).ToString();
                         }
                         outputSpeed += "};";
                         outputDotNum += "};";
@@ -557,9 +560,9 @@ namespace test
 
             Lines.Add(Point_num[i].ToString());
             Lines.Add(speed[i].ToString());
-            outputDot_X += (i != 0) ? " ," : "";
+            outputDot_X += (i != 0) ? ", " : "";
             outputDot_X += $"{Math.Round(dot_map[i, 0, 0] * Proportion)}";
-            outputDot_Y += (i != 0) ? " ," : "";
+            outputDot_Y += (i != 0) ? ", " : "";
             outputDot_Y += $"{Math.Round((pictureBox1.Size.Height - dot_map[i, 0, 1]) * Proportion)}";
             double[] arcLengths = CalculateLength(i);
             double totalLength = arcLengths[100];
@@ -574,6 +577,8 @@ namespace test
                 outputDot_X += $", {Math.Round(x * Proportion)}";
                 outputDot_Y += $", {Math.Round((pictureBox1.Size.Height - y) * Proportion)}";
             }
+            outputDot_X += $", {Math.Round(dot_map[i, 3, 0] * Proportion)}";
+            outputDot_Y += $", {Math.Round((pictureBox1.Size.Height - dot_map[i, 3, 1]) * Proportion)}";
         }
 
         private void Bar_Speed_ValueChanged(object sender, EventArgs e) //調整機器速度
@@ -590,7 +595,7 @@ namespace test
         private void hScrollBar1_ValueChanged(object sender, EventArgs e) //調整中間點數量
         {
             int n = hScrollBar1.Value;
-            label3.Text = n.ToString();
+            label3.Text = (n + 2).ToString();
             if (big != -1)
             {
                 Point_num[big] = n;
@@ -625,8 +630,6 @@ namespace test
                 pictureBox_size = size;
                 pictureBox1.Size = new Size(size, size);
                 Label_Messenger.Location = new Point((int)(size - 160), Label_Messenger.Location.Y);
-                label1.Location = new Point((int)(size + 20), label1.Location.Y);
-                textBox1.Location = new Point((int)(size + 145), textBox1.Location.Y);
                 label6.Location = new Point((int)(size + 40), label6.Location.Y);
                 Bar_Speed.Location = new Point((int)(size + 120), Bar_Speed.Location.Y);
                 label2.Location = new Point((int)(size + 300), label2.Location.Y);
